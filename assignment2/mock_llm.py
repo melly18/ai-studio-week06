@@ -19,11 +19,15 @@ def mock_llm_call(system, user_message, temperature=0.2, max_tokens=500):
     
     # 20%확률로 3가지 답변 중 무작위로 불량 응답을 만든다.
     rand = random.random()
+    type = "normal"  # 응답의 유형도 저장한다.
     prob = 0.2/3
     if rand < prob:
         result["text"] = "```json\n" + result["text"] + "\n```"  # 코드펜스 포함
+        type = "codefence"
     elif rand < prob * 2:
         result["text"] = "물론입니다! 분석 결과는 다음과 같습니다.\n" + result["text"]  # 사족 포함
+        type = "comment"
     elif rand < prob * 3:
         result["text"] = result["text"][:-20]  # 잘린 JSON
-    return result
+        type = "split"
+    return result, type
